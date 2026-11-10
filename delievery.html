@@ -1,0 +1,700 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Six months, six songs</title>
+<style>
+  :root {
+    --paper: #fdf1f5;
+    --card: #fffafc;
+    --ink: #4a2432;
+    --soft: #9a6a7a;
+    --rule: rgba(74, 36, 50, 0.12);
+    --accent: #e0568a;
+    --shadow: 0 1px 2px rgba(26, 23, 20, 0.06), 0 14px 34px -14px rgba(26, 23, 20, 0.3);
+    --btn: #4a2432;
+    --btn-ink: #fff3f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #2a1420;
+      --card: #3a1d2c;
+      --ink: #fbe3ec;
+      --soft: #d4a0b4;
+      --rule: rgba(251, 227, 236, 0.14);
+      --accent: #f58bb5;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 34px -14px rgba(0, 0, 0, 0.7);
+      --btn: #fbe3ec;
+      --btn-ink: #2a1420;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #2a1420;
+    --card: #3a1d2c;
+    --ink: #fbe3ec;
+    --soft: #d4a0b4;
+    --rule: rgba(251, 227, 236, 0.14);
+    --accent: #f58bb5;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 34px -14px rgba(0, 0, 0, 0.7);
+    --btn: #fbe3ec;
+    --btn-ink: #2a1420;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 56px 24px 40px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Pages: only one visible at a time */
+  .page {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    animation: fade 0.5s ease;
+  }
+  .page.is-active { display: flex; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .eyebrow {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-size: clamp(2.2rem, 6.5vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  h1 em, h2 em { font-style: italic; color: var(--accent); }
+  h2 {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.1;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-style: italic;
+    color: var(--soft);
+    margin: 0 0 36px;
+  }
+
+  /* Fireworks intro */
+  .fx {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .boom {
+    display: inline-block;
+    opacity: 0;
+  }
+  .greet-text.show .boom {
+    animation: boom 1.1s cubic-bezier(.2, .9, .3, 1) var(--d, 0s) forwards;
+  }
+  @keyframes boom {
+    0%   { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.2); filter: blur(6px); }
+    55%  { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; transform: none; filter: none; }
+  }
+  .greet-text .fade { opacity: 0; transition: opacity 1.2s ease 1.3s; }
+  .greet-text.show .fade { opacity: 1; }
+
+  /* Songs */
+  .stage {
+    position: relative;
+    height: 360px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .card {
+    position: absolute;
+    inset: 0;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 34px 32px 30px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    opacity: 0;
+    transform: translateX(28px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .card.is-active { opacity: 1; transform: none; pointer-events: auto; }
+  .card.is-prev { transform: translateX(-28px) scale(0.98); }
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 32px;
+    top: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 3px;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 6px;
+  }
+  .month {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .num {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--soft);
+  }
+  .song {
+    font-size: 1.9rem;
+    line-height: 1.15;
+    font-weight: 400;
+    margin: auto 0 4px;
+  }
+  .artist { font-style: italic; color: var(--soft); margin: 0 0 16px; }
+  .embed {
+    display: block;
+    width: 100%;
+    height: 152px;
+    border: 0;
+    border-radius: 12px;
+    margin: auto 0 14px;
+  }
+  .listen {
+    display: inline-block;
+    align-self: flex-start;
+    margin: auto 0 16px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--btn);
+    color: var(--btn-ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: transform 0.15s ease, opacity 0.2s ease;
+  }
+  .listen:hover { opacity: 0.85; }
+  .listen:active { transform: scale(0.97); }
+  .listen:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .reason {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Buttons */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 28px;
+  }
+  .arrow, .nav-btn {
+    border: 1px solid var(--rule);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+    font-family: inherit;
+  }
+  .arrow {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    display: grid;
+    place-items: center;
+  }
+  .nav-btn {
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-style: italic;
+  }
+  .arrow:hover, .nav-btn:hover { background: var(--btn); color: var(--btn-ink); }
+  .arrow:active, .nav-btn:active { transform: scale(0.96); }
+  .arrow:focus-visible, .nav-btn:focus-visible, .dot:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .arrow:disabled, .nav-btn:disabled { opacity: 0.35; cursor: default; background: var(--card); color: var(--ink); }
+  .dots { display: flex; gap: 10px; }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 0;
+    padding: 0;
+    background: var(--rule);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .dot.is-active { background: var(--accent); transform: scale(1.25); }
+
+  /* Page navigation */
+  .pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .progress {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--soft);
+  }
+
+  /* Flowers and apology */
+  .bouquet {
+    display: block;
+    width: min(300px, 80vw);
+    height: auto;
+    margin: 0 auto 24px;
+  }
+  .apology {
+    font-size: clamp(1.5rem, 4.5vw, 2rem);
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 22em;
+    margin: 0 auto;
+  }
+
+  /* Letter */
+  .letter {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 40px 36px 36px;
+    text-align: left;
+  }
+  .letter p { font-size: 1.06rem; line-height: 1.75; margin: 0 0 18px; }
+  .letter .salutation { font-style: italic; color: var(--soft); }
+  .letter .signoff { margin: 26px 0 0; font-style: italic; }
+  .letter .signoff strong { font-style: normal; font-weight: 400; color: var(--accent); }
+
+  @media (max-width: 480px) {
+    main { padding: 40px 18px 28px; }
+    .card { padding: 28px 24px 24px; }
+    .card::before { left: 24px; }
+    .song { font-size: 1.6rem; }
+    .stage { height: 380px; }
+    .letter { padding: 30px 24px 28px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="fx" class="fx" aria-hidden="true"></canvas>
+<main>
+
+  <!-- Page 1: greeting -->
+  <section class="page is-active" data-page="greeting">
+    <div class="greet-text" id="greetText">
+      <p class="eyebrow fade">Six months</p>
+      <h1>
+        <span class="boom" style="--x:-180px;--y:-140px;--d:0s">Happy</span>
+        <span class="boom" style="--x:160px;--y:-120px;--d:.05s">6th</span>
+        <span class="boom" style="--x:-120px;--y:110px;--d:.1s">month</span>
+        <span class="boom" style="--x:200px;--y:90px;--d:.04s">anniversary,</span><br>
+        <em><span class="boom" style="--x:-200px;--y:40px;--d:.08s">my</span> <span class="boom" style="--x:140px;--y:-60px;--d:.02s">Kaylee</span></em>
+      </h1>
+      <p class="lede fade">I made you something. Click next when you're ready.</p>
+    </div>
+  </section>
+
+  <!-- Page 2: six songs -->
+  <section class="page" data-page="songs">
+    <h2>Six months, <em>six songs</em></h2>
+    <p class="lede">One song for each month, and the reason it stayed.</p>
+
+    <div class="stage" id="stage" aria-live="polite">
+      <article class="card is-active" aria-label="Month 1 of 6">
+        <div class="top"><span class="month">Month 1</span><span class="num">I / VI</span></div>
+        <iframe class="embed" src="https://open.spotify.com/embed/track/2PWTZV5znjLtZC5T1EVJvL" allow="autoplay; encrypted-media" loading="lazy" title="Song 1"></iframe>
+        <p class="reason">Because I actually felt what falling in love looks like, really.</p>
+      </article>
+      <article class="card" aria-label="Month 2 of 6">
+        <div class="top"><span class="month">Month 2</span><span class="num">II / VI</span></div>
+        <iframe class="embed" src="https://open.spotify.com/embed/track/1EoThnDm6kQfB2idIfR30n" allow="autoplay; encrypted-media" loading="lazy" title="Song 2"></iframe>
+        <p class="reason">Because, actually, your love is my drug.</p>
+      </article>
+      <article class="card" aria-label="Month 3 of 6">
+        <div class="top"><span class="month">Month 3</span><span class="num">III / VI</span></div>
+        <iframe class="embed" src="https://open.spotify.com/embed/track/6G9YlbU3ByPJQvOFDRdwyM" allow="autoplay; encrypted-media" loading="lazy" title="Song 3"></iframe>
+        <p class="reason">Because it's you I finally found, and I'm glad I found you.</p>
+      </article>
+      <article class="card" aria-label="Month 4 of 6">
+        <div class="top"><span class="month">Month 4</span><span class="num">IV / VI</span></div>
+        <iframe class="embed" src="https://open.spotify.com/embed/track/5A619AfuoWdjHA2QFijXjv" allow="autoplay; encrypted-media" loading="lazy" title="Song 4"></iframe>
+        <p class="reason">Because I constantly miss you.</p>
+      </article>
+      <article class="card" aria-label="Month 5 of 6">
+        <div class="top"><span class="month">Month 5</span><span class="num">V / VI</span></div>
+        <iframe class="embed" src="https://open.spotify.com/embed/track/66WIJeFh6AZ1MgVvZyUuL8" allow="autoplay; encrypted-media" loading="lazy" title="Song 5"></iframe>
+        <p class="reason">Because there is this way of yours, some subconscious pull between the two of us.</p>
+      </article>
+      <article class="card" aria-label="Month 6 of 6">
+        <div class="top"><span class="month">Month 6</span><span class="num">VI / VI</span></div>
+        <iframe class="embed" src="https://open.spotify.com/embed/track/2enPRFda84VE2wtI8c86Uf" allow="autoplay; encrypted-media" loading="lazy" title="Song 6"></iframe>
+        <p class="reason">Because I wish we always stay forever.</p>
+      </article>
+    </div>
+
+    <div class="controls">
+      <button class="arrow" id="prev" aria-label="Previous song">&#8592;</button>
+      <div class="dots" id="dots"></div>
+      <button class="arrow" id="next" aria-label="Next song">&#8594;</button>
+    </div>
+  </section>
+
+  <!-- Page 3: flowers -->
+  <section class="page" data-page="flowers">
+    <h2>For <em>you</em></h2>
+    <p class="lede">Something that doesn't wilt.</p>
+    <svg class="bouquet" viewBox="0 0 300 320" aria-label="A full bouquet of pink flowers" role="img">
+      <defs>
+        <g id="fl">
+          <g fill="currentColor">
+            <circle cx="0" cy="-12" r="10"/>
+            <circle cx="11.4" cy="-3.7" r="10"/>
+            <circle cx="7" cy="9.7" r="10"/>
+            <circle cx="-7" cy="9.7" r="10"/>
+            <circle cx="-11.4" cy="-3.7" r="10"/>
+          </g>
+          <circle cx="0" cy="0" r="6" fill="#fff3c4"/>
+        </g>
+      </defs>
+
+      <!-- stems -->
+      <g stroke="#6b9a6b" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M150 292 Q120 220 95 100"/>
+        <path d="M150 292 Q140 200 150 75"/>
+        <path d="M150 292 Q180 220 205 100"/>
+        <path d="M150 292 Q110 230 70 145"/>
+        <path d="M150 292 Q190 230 230 145"/>
+        <path d="M150 292 Q125 240 125 135"/>
+        <path d="M150 292 Q175 240 175 135"/>
+        <path d="M150 292 Q140 250 100 190"/>
+        <path d="M150 292 Q160 250 200 190"/>
+        <path d="M150 292 Q150 250 150 185"/>
+      </g>
+
+      <!-- leaves -->
+      <g fill="#7fb07f">
+        <path d="M122 240 Q98 222 90 236 Q106 250 122 240Z"/>
+        <path d="M178 240 Q202 222 210 236 Q194 250 178 240Z"/>
+        <path d="M128 200 Q108 180 100 194 Q114 208 128 200Z"/>
+        <path d="M172 200 Q192 180 200 194 Q186 208 172 200Z"/>
+        <path d="M140 170 Q130 150 118 156 Q128 172 140 170Z"/>
+        <path d="M160 170 Q170 150 182 156 Q172 172 160 170Z"/>
+        <path d="M86 150 Q70 150 62 160 Q76 168 86 150Z"/>
+        <path d="M214 150 Q230 150 238 160 Q224 168 214 150Z"/>
+      </g>
+
+      <!-- baby's breath -->
+      <g fill="#fff8fb" stroke="#f3d6e2" stroke-width="0.8">
+        <circle cx="50" cy="90" r="3"/><circle cx="62" cy="75" r="2.5"/><circle cx="92" cy="58" r="3"/>
+        <circle cx="120" cy="40" r="2.5"/><circle cx="182" cy="42" r="3"/><circle cx="212" cy="62" r="2.5"/>
+        <circle cx="248" cy="85" r="3"/><circle cx="256" cy="110" r="2.5"/><circle cx="40" cy="120" r="2.5"/>
+        <circle cx="105" cy="250" r="2.5"/><circle cx="196" cy="250" r="2.5"/><circle cx="150" cy="30" r="2.5"/>
+      </g>
+
+      <!-- buds -->
+      <circle cx="60" cy="112" r="6" fill="#ffd1e3"/>
+      <circle cx="240" cy="112" r="6" fill="#ffd1e3"/>
+      <circle cx="150" cy="48" r="5.5" fill="#e0568a"/>
+
+      <!-- back flowers -->
+      <use href="#fl" transform="translate(95 100) scale(1.1)" color="#e0568a"/>
+      <use href="#fl" transform="translate(150 75) scale(1.2)" color="#c93d74"/>
+      <use href="#fl" transform="translate(205 100) scale(1.1)" color="#e0568a"/>
+      <use href="#fl" transform="translate(120 62) scale(1)" color="#f58bb5"/>
+      <use href="#fl" transform="translate(180 62) scale(1)" color="#f58bb5"/>
+
+      <!-- middle flowers -->
+      <use href="#fl" transform="translate(70 145) scale(0.95)" color="#f58bb5"/>
+      <use href="#fl" transform="translate(125 135) scale(1.05)" color="#f58bb5"/>
+      <use href="#fl" transform="translate(175 135) scale(1.05)" color="#e0568a"/>
+      <use href="#fl" transform="translate(230 145) scale(0.95)" color="#f58bb5"/>
+
+      <!-- front flowers -->
+      <use href="#fl" transform="translate(100 190) scale(0.9)" color="#ffb3cf"/>
+      <use href="#fl" transform="translate(150 185) scale(1)" color="#f58bb5"/>
+      <use href="#fl" transform="translate(200 190) scale(0.9)" color="#ffb3cf"/>
+      <use href="#fl" transform="translate(125 240) scale(0.85)" color="#ffd1e3"/>
+      <use href="#fl" transform="translate(175 240) scale(0.85)" color="#ffd1e3"/>
+
+      <!-- ribbon -->
+      <path d="M150 292 L124 276 L124 306Z" fill="#e0568a"/>
+      <path d="M150 292 L176 276 L176 306Z" fill="#e0568a"/>
+      <circle cx="150" cy="292" r="6" fill="#b8336a"/>
+    </svg>
+    <p class="reason">Every one of these is for you, my love.</p>
+  </section>
+
+  <!-- Page 4: apology -->
+  <section class="page" data-page="apology">
+    <p class="apology">And I'm so sorry for everything I done, for who I am</p>
+  </section>
+
+  <!-- Page 5: letter -->
+  <section class="page" data-page="letter">
+    <h2>A letter, <em>for you</em></h2>
+    <p class="lede">Read it whenever you like.</p>
+    <article class="letter">
+      <p class="salutation">My baby,</p>
+      <p>I didn't want this day to pass without saying it properly, so I wrote it all down. Six months ago I didn't know how much one person could change the way ordinary days feel. Now I can't picture a day without you in it.</p>
+      <p>I made you this small gift hopeing that you will like it, and just to tell you exactly that you are the reason that I finally recognised what falling in love actually looks like. It's been every bit as real as I hoped it would be, and you're the reason it is.</p>
+      <p>Your love is my drug, and I'm not even embarrassed to say it. Some days I catch myself thinking about you in the middle of something completely unrelated, and I smile like an idiot. And people around would ask me questions like who made you smile wide like that, and I'll tell them my Kaylee, cuz trully you do/ I hope you know that every time you laugh, or look over like I'm the only one that matters, it lands somewhere deep in me.</p>
+      <p>When I found you, I stopped looking. That's the simplest way I can put it. I'm so glad I found you, my love. Out of everyone who could have been on the other side of the conversation, it was you, and I still feel lucky about that.</p>
+      <p>I miss you constantly. Even when we're together, there's a small part of me that's already counting the hours until the next time, until the day we can meet in real life. I don't think that will ever stop, and honestly I don't want it to.</p>
+      <p>There's also a pull between us that I can't quite explain. It's in the small things: how we finish each other's thoughts, how quiet can feel comfortable with you, how I always seem to find my way back to you. It feels like something we're building together without even trying.</p>
+      <p>What I hope for the next six months, and for everything after them, is simple. I want more mornings like the ones we've already had, more late-night talks, more plans that we make and actually keep. I want to keep learning you, and I want you to keep choosing me, the same way I'm choosing you.</p>
+      <p>I wish we always stay forever, my baby. I know it's a big thing to say, but I mean it with my whole heart. Thank you for every single day so far. Here's to the next six months, and to all the ones after that.</p>
+      <p class="signoff">Forever yours,<br><strong>&nbsp;</strong></p>
+    </article>
+  </section>
+
+  <!-- Page 6: thank you -->
+  <section class="page" data-page="thanks">
+    <h2>Thank <em>you</em></h2>
+    <p class="lede">For every smile, every soft moment, and every reason I still choose you.</p>
+    <article class="letter">
+      <p class="salutation">My love,</p>
+      <p>Thank you for being patient with me. Thank you for staying, even when life gets messy, and for making ordinary days feel more beautiful just by being in them.</p>
+      <p>Thank you for the laughter, the comfort, the late-night talks, and the little moments that somehow became my favorite memories. You make my world feel calmer, brighter, and more complete.</p>
+      <p>I am so grateful for your kindness, your sweetness, and the way you make me feel seen. You have a way of making even the hardest days feel lighter, and I don't take that for granted.</p>
+      <p>Thank you for choosing me, for trusting me, and for loving me in a way that feels real, warm, and steady. I hope you know how deeply I appreciate you.</p>
+      <p>I love you, and I am thankful every day for the chance to know you, to hold you close, and to keep falling for you.</p>
+      <p class="signoff">Always yours,<br><strong>Abdo</strong></p>
+    </article>
+  </section>
+
+  <!-- Page navigation -->
+  <nav class="pager" aria-label="Pages">
+    <button class="nav-btn" id="back">&larr; Back</button>
+    <span class="progress" id="progress">1 / 3</span>
+    <button class="nav-btn" id="forward">Next &rarr;</button>
+  </nav>
+
+</main>
+
+<script>
+(function () {
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var back = document.getElementById('back');
+  var forward = document.getElementById('forward');
+  var progress = document.getElementById('progress');
+  var pageIndex = 0;
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var dotsWrap = document.getElementById('dots');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var cardIndex = 0;
+
+  cards.forEach(function (_, i) {
+    var b = document.createElement('button');
+    b.className = 'dot';
+    b.setAttribute('aria-label', 'Go to song ' + (i + 1));
+    b.addEventListener('click', function () { showCard(i); });
+    dotsWrap.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function showCard(i) {
+    if (i < 0 || i >= cards.length) return;
+    cardIndex = i;
+    cards.forEach(function (c, n) {
+      c.classList.toggle('is-active', n === cardIndex);
+      c.classList.toggle('is-prev', n < cardIndex);
+      c.setAttribute('aria-hidden', n === cardIndex ? 'false' : 'true');
+    });
+    dots.forEach(function (d, n) { d.classList.toggle('is-active', n === cardIndex); });
+    prevBtn.disabled = cardIndex === 0;
+    nextBtn.disabled = cardIndex === cards.length - 1;
+  }
+
+  prevBtn.addEventListener('click', function () { showCard(cardIndex - 1); });
+  nextBtn.addEventListener('click', function () { showCard(cardIndex + 1); });
+
+  var startX = null;
+  var stage = document.getElementById('stage');
+  stage.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) showCard(cardIndex + (dx < 0 ? 1 : -1));
+    startX = null;
+  });
+
+  function showPage(i) {
+    if (i < 0 || i >= pages.length) return;
+    pageIndex = i;
+    pages.forEach(function (p, n) { p.classList.toggle('is-active', n === pageIndex); });
+    back.disabled = pageIndex === 0;
+    forward.disabled = pageIndex === pages.length - 1;
+    progress.textContent = (pageIndex + 1) + ' / ' + pages.length;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  back.addEventListener('click', function () { showPage(pageIndex - 1); });
+  forward.addEventListener('click', function () { showPage(pageIndex + 1); });
+
+  document.addEventListener('keydown', function (e) {
+    if (pages[pageIndex].getAttribute('data-page') === 'songs') {
+      if (e.key === 'ArrowLeft') showCard(cardIndex - 1);
+      if (e.key === 'ArrowRight') showCard(cardIndex + 1);
+    }
+  });
+
+  showPage(0);
+  showCard(0);
+
+  /* Fireworks intro: launch, boom, then reveal the greeting */
+  (function fireworks() {
+    var greetText = document.getElementById('greetText');
+    var canvas = document.getElementById('fx');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduce) {
+      canvas.style.display = 'none';
+      greetText.classList.add('show');
+      return;
+    }
+
+    var ctx = canvas.getContext('2d');
+    var W, H, dpr = window.devicePixelRatio || 1;
+    var colors = ['#f58bb5', '#e0568a', '#ffd1e3', '#ffb3cf', '#ffffff'];
+    var rockets = [], parts = [], bursts = 0, raf = null;
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function launch() {
+      rockets.push({
+        x: W * (0.2 + Math.random() * 0.6),
+        y: H,
+        vy: -(9 + Math.random() * 3),
+        targetY: H * (0.22 + Math.random() * 0.25),
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+
+    function burst(x, y, color) {
+      var n = 70;
+      for (var i = 0; i < n; i++) {
+        var a = (Math.PI * 2 * i) / n + Math.random() * 0.1;
+        var s = 2 + Math.random() * 4.5;
+        parts.push({ x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, color: color });
+      }
+    }
+
+    function onBurst() {
+      bursts++;
+      if (bursts === 6) {
+        greetText.classList.add('show');
+      }
+    }
+
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+
+      rockets = rockets.filter(function (r) {
+        r.y += r.vy;
+        ctx.fillStyle = r.color;
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+        if (r.y <= r.targetY) {
+          burst(r.x, r.y, r.color);
+          onBurst();
+          return false;
+        }
+        return true;
+      });
+
+      parts = parts.filter(function (p) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.98;
+        p.vy = p.vy * 0.98 + 0.06;
+        p.life -= 0.012;
+        if (p.life <= 0) return false;
+        ctx.globalAlpha = Math.max(p.life, 0);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        return true;
+      });
+      ctx.globalAlpha = 1;
+
+      if (bursts >= 6 && rockets.length === 0 && parts.length === 0) {
+        canvas.style.display = 'none';
+        cancelAnimationFrame(raf);
+        return;
+      }
+      raf = requestAnimationFrame(frame);
+    }
+
+    for (var k = 0; k < 6; k++) launch();
+    frame();
+  })();
+})();
+</script>
+</body>
+</html>
+
+</body></html>
